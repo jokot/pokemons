@@ -22,7 +22,6 @@ class PokemonRepositoryIml @Inject constructor(
     override fun getPokemons(): Flow<DataState<List<Pokemon>>> = flow {
         emit(DataState.Loading)
 
-
         when (val networkResult = networkDataSource.getPokemons()) {
             is NetworkResult.Success -> {
                 val pokemons = networkResult.data.map {

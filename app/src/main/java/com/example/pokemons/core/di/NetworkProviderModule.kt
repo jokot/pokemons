@@ -9,6 +9,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.Call
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -27,6 +28,11 @@ object NetworkProviderModule {
     @Provides
     @Singleton
     fun provideOkHttpCallFactory(): Call.Factory = OkHttpClient.Builder()
+        .addInterceptor(
+            HttpLoggingInterceptor().apply {
+                setLevel(HttpLoggingInterceptor.Level.BODY)
+            }
+        )
         .build()
 
     @Provides
@@ -35,7 +41,7 @@ object NetworkProviderModule {
         jsonConverterFactory: Converter.Factory,
         okHttpClientCallFactory: Call.Factory
     ): Retrofit = Retrofit.Builder()
-        .baseUrl("https://pokeapi.co/api/v2")
+        .baseUrl("https://pokeapi.co/api/v2/")
         .addConverterFactory(jsonConverterFactory)
         .callFactory { request ->
             okHttpClientCallFactory.newCall(request)
